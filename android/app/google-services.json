@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "681396028404",
+    "project_id": "amsgomobile",
+    "storage_bucket": "amsgomobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:681396028404:android:83b85ea68cb4437198afa1",
+        "android_client_info": {
+          "package_name": "com.example.ams_go_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "681396028404-9nkobmigea8f200qm8mg4mh8ise30tct.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAF5idFxmQMzV20LzgAmhJUE5syfYYmc-U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "681396028404-9nkobmigea8f200qm8mg4mh8ise30tct.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

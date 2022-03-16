@@ -17,13 +17,13 @@ class UserDetailsPage extends StatelessWidget {
     return title;
   }
 
-  void customLaunch(command) async {
-    if (await canLaunch(command)) {
-      await launch(command);
-    } else {
-      print('Error');
-    }
-  }
+  // void customLaunch(command) async {
+  //   if (await canLaunch(command)) {
+  //     await launch(command);
+  //   } else {
+  //     print('Error');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -85,8 +85,8 @@ class UserDetailsPage extends StatelessWidget {
                 ),
                 FlatButton(
                   onPressed: () {
-                    customLaunch(
-                        'mailto:${user.email}?subject=Contact%20Information&body=Type%20your%20mail%20here');
+                    // customLaunch(
+                    //     'mailto:${user.email}?subject=Contact%20Information&body=Type%20your%20mail%20here');
                   },
                   child: Icon(
                     Icons.email,

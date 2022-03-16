@@ -1,10 +1,11 @@
+import 'package:ams_go_mobile/widget/navbar.dart';
 import 'package:flutter/material.dart';
-import 'package:ams_go_mobile/widget/navigation_drawer_widget.dart';
+import 'package:ams_go_mobile/widget/navigation_drawer_widget2.dart';
 
 class FavouritesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
-        drawer: NavigationDrawerWidget(),
+        drawer: NavBar(),
         appBar: AppBar(
           title: Text('Favourites'),
           centerTitle: true,

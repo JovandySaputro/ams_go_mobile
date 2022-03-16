@@ -1,8 +1,12 @@
 import 'dart:ffi';
 
+import 'package:ams_go_mobile/data/sharedpref/sharedpref.dart';
 import 'package:ams_go_mobile/ui/home/home_main.dart';
+import 'package:ams_go_mobile/ui/home/home_side_bar.dart';
 import 'package:ams_go_mobile/ui/home/home_page.dart';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -11,15 +15,57 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  TextEditingController textEdUsernameController = TextEditingController();
-  TextEditingController textEdPasswordController = TextEditingController();
+class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
+  TextEditingController vUsername = TextEditingController();
+  TextEditingController vPassword = TextEditingController();
   double getSmallDiameter(BuildContext context) =>
       MediaQuery.of(context).size.width * 2 / 3;
   double getBigDiameter(BuildContext context) =>
       MediaQuery.of(context).size.width * 7 / 8;
   bool cekRemember = false;
   bool isHidePass = true;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance?.addObserver(this);
+    checkFirstScreen();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    WidgetsBinding.instance?.removeObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // TODO: implement didChangeAppLifecycleState
+    super.didChangeAppLifecycleState(state);
+  }
+
+  void checkFirstScreen() async {
+    String prefUsername = (await SharedPref.getString('username') ?? "");
+    String prefPass = (await SharedPref.getString('password') ?? "");
+    bool prefRemember = (await SharedPref.getBool('remember') ?? false);
+    setState(() {
+      if (prefRemember == true) {
+        vUsername.text = prefUsername;
+        vPassword.text = prefPass;
+        cekRemember = prefRemember;
+      } else {}
+    });
+  }
+
+  void saveData(String user, String pass) async {
+    await SharedPref.saveStateLogin(user, pass, cekRemember);
+  }
+
+  void removeData() async {
+    await SharedPref.removeUserPass();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
               decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: LinearGradient(
-                      colors: [Color(0xFFB226B2), Color(0xFFFF6DA7)],
+                      colors: [Color(0xff0096ff), Color(0xff6610f2)],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter)),
             ),
@@ -59,7 +105,7 @@ class _LoginPageState extends State<LoginPage> {
               decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: LinearGradient(
-                      colors: [Color(0xFFB226B2), Color(0xFFFF4891)],
+                      colors: [Color(0xff0096ff), Color(0xff6610f2)],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter)),
             ),
@@ -84,32 +130,34 @@ class _LoginPageState extends State<LoginPage> {
                       color: Colors.grey,
                     ),
                     borderRadius: BorderRadius.circular(5)),
-                margin: EdgeInsets.fromLTRB(20, 230, 20, 5),
+                margin: EdgeInsets.fromLTRB(20, 300, 20, 5),
                 padding: EdgeInsets.fromLTRB(10, 0, 10, 25),
                 child: Column(
                   children: [
                     TextField(
+                      controller: vUsername,
                       decoration: InputDecoration(
                           icon: Icon(
                             Icons.person,
-                            color: Color(0xFFFF4891),
+                            color: Color(0xff6610f2),
                           ),
                           focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Color(0xFFFF4891))),
+                              borderSide: BorderSide(color: Color(0xff6610f2))),
                           labelText: "Username :",
-                          labelStyle: TextStyle(color: Color(0xFFFF4891))),
+                          labelStyle: TextStyle(color: Color(0xff6610f2))),
                     ),
                     TextField(
                       obscureText: isHidePass,
+                      controller: vPassword,
                       decoration: InputDecoration(
                         icon: Icon(
                           Icons.vpn_key,
-                          color: Color(0xFFFF4891),
+                          color: Color(0xff6610f2),
                         ),
                         focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Color(0xFFFF4891))),
+                            borderSide: BorderSide(color: Color(0xff6610f2))),
                         labelText: "Password :",
-                        labelStyle: TextStyle(color: Color(0xFFFF4891)),
+                        labelStyle: TextStyle(color: Color(0xff6610f2)),
                         suffixIcon: IconButton(
                             icon: Icon(isHidePass
                                 ? Icons.visibility
@@ -130,7 +178,7 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       Checkbox(
                         checkColor: Colors.white,
-                        activeColor: Color(0xFFFF4891),
+                        activeColor: Color(0xff6610f2),
                         value: this.cekRemember,
                         onChanged: (bool? value) {
                           setState(() {
@@ -141,7 +189,7 @@ class _LoginPageState extends State<LoginPage> {
                       Text(
                         "Remember Me",
                         style:
-                            TextStyle(color: Color(0xFFFF4891), fontSize: 14),
+                            TextStyle(color: Color(0xff6610f2), fontSize: 14),
                       ),
                     ],
                   )),
@@ -161,9 +209,9 @@ class _LoginPageState extends State<LoginPage> {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           gradient: LinearGradient(
-              colors: [Color(0xFFB226B2), Color(0xFFFF4891)],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter)),
+              colors: [Color(0xff0096ff), Color(0xff6610f2)],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight)),
       child: Material(
           borderRadius: BorderRadius.circular(20),
           color: Colors.transparent,
@@ -171,9 +219,15 @@ class _LoginPageState extends State<LoginPage> {
             splashColor: Colors.amber,
             borderRadius: BorderRadius.circular(20),
             onTap: () {
+              if (cekRemember == false) {
+                removeData();
+              } else {
+                saveData(vUsername.text, vPassword.text);
+              }
+
               Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (context) {
-                return MainHome();
+                return Home();
               }));
             },
             child: Center(
@@ -183,39 +237,6 @@ class _LoginPageState extends State<LoginPage> {
                   TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             )),
           )),
-    );
-  }
-
-  TextField txtInputUsername() {
-    return TextField(
-      decoration: InputDecoration(
-          prefixIcon: Icon(Icons.person),
-          labelText: "Username",
-          hintText: "masukan username",
-          prefixStyle:
-              TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
-      onChanged: (value) {
-        setState(() {});
-      },
-      controller: textEdUsernameController,
-    );
-  }
-
-  TextField txtInputPass() {
-    return TextField(
-      obscureText: true,
-      decoration: InputDecoration(
-          prefixIcon: Icon(Icons.person),
-          labelText: "Password",
-          hintText: "masukan Password",
-          prefixStyle:
-              TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
-      onChanged: (value) {
-        setState(() {});
-      },
-      controller: textEdPasswordController,
     );
   }
 }

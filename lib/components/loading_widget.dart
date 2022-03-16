@@ -9,15 +9,17 @@ class LoadingView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SizedBox(
-          height: MediaQuery.of(context).size.height*0.2,
+          height: MediaQuery.of(context).size.height * 0.2,
         ),
         Container(
           child: Lottie.asset('assets/loading.json'),
         ),
-        Text('Loading ...',
-        style: TextStyle(
-          fontSize: 16.0,
-        ),),
+        Text(
+          'Loading ...',
+          style: TextStyle(
+            fontSize: 16.0,
+          ),
+        ),
       ],
     );
   }

@@ -2,17 +2,72 @@
 // import 'dart:developer';
 // import 'package:google_fonts/google_fonts.dart';
 
-import 'package:ams_go_mobile/model/navigation_item.dart';
-import 'package:ams_go_mobile/provider/navigation_provider.dart';
-import 'package:ams_go_mobile/ui/home/home_page.dart';
+import 'package:ams_go_mobile/data/sharedpref/sharedpref.dart';
 import 'package:ams_go_mobile/ui/login_page.dart';
-import 'package:ams_go_mobile/ui/profile_page.dart';
+import 'package:ams_go_mobile/ui/splashscreen/splash_page.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'components/costom_progress_bar.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 
-void main() {
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  print('Handling a background message ${message.messageId}');
+}
+
+late AndroidNotificationChannel? channel;
+late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await FlutterDownloader.initialize();
+  await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  if (!kIsWeb) {
+    channel = const AndroidNotificationChannel(
+      'high_importance_channel', // id
+      'High Importance Notifications', // title
+      'This channel is used for important notifications.',
+      importance: Importance.high,
+    );
+
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel!);
+
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+  }
+
   runApp(const MyApp());
+  configLoading();
+  await SharedPref.init();
+}
+
+void configLoading() {
+  EasyLoading.instance
+    ..displayDuration = const Duration(milliseconds: 2000)
+    ..indicatorType = EasyLoadingIndicatorType.fadingCircle
+    ..loadingStyle = EasyLoadingStyle.dark
+    ..indicatorSize = 45.0
+    ..radius = 10.0
+    ..progressColor = Colors.yellow
+    ..backgroundColor = Colors.green
+    ..indicatorColor = Colors.yellow
+    ..textColor = Colors.yellow
+    ..maskColor = Colors.blue.withOpacity(0.5)
+    ..userInteractions = true
+    ..customAnimation = CustomAnimation();
 }
 
 class MyApp extends StatefulWidget {
@@ -23,11 +78,44 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  String title = "title";
+  String content = "Content";
+
+  @override
+  void initState() {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+      if (notification != null && android != null && !kIsWeb) {
+        flutterLocalNotificationsPlugin.show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              channel!.id,
+              channel!.name,
+              channel!.description,
+              icon: 'launch_background',
+            ),
+          ),
+        );
+      }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('A new onMessageOpenedApp event was published!');
+      //navigation to page
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      home: SplashScreen(),
+      builder: EasyLoading.init(),
     );
   }
 }
@@ -167,7 +255,6 @@ class _MyAppState extends State<MyApp> {
 //   }
 // }
 
-
 //fleksible layout
 // class MyApp extends StatefulWidget {
 //   const MyApp({Key? key}) : super(key: key);
@@ -187,14 +274,14 @@ class _MyAppState extends State<MyApp> {
 //         body: Column(children: [
 //           Flexible(
 //             flex: 1,
-          
+
 //             child: Row(
 //               children: [
 //                 Flexible(
 //                     flex: 1,
 //                     child: Container(
 //                       color: Colors.red,
-                      
+
 //                     )),
 //                 Flexible(
 //                     flex: 1,
@@ -224,8 +311,6 @@ class _MyAppState extends State<MyApp> {
 //     );
 //   }
 // }
-
-
 
 //listview
 // class MyApp extends StatefulWidget {

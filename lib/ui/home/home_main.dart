@@ -1,64 +1,124 @@
-import 'package:ams_go_mobile/model/navigation_item.dart';
-import 'package:ams_go_mobile/provider/navigation_provider.dart';
+import 'package:ams_go_mobile/ui/List_Page.dart';
+import 'package:ams_go_mobile/ui/create_page.dart';
+import 'package:ams_go_mobile/ui/delegasi/list_delegasi_page.dart';
+import 'package:ams_go_mobile/ui/download.dart';
 import 'package:ams_go_mobile/ui/favourites_page.dart';
 import 'package:ams_go_mobile/ui/home/home_page.dart';
-import 'package:ams_go_mobile/ui/login_page.dart';
 import 'package:ams_go_mobile/ui/profile_page.dart';
+import 'package:ams_go_mobile/ui/sekretaris/sekre_list_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 
-Future main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
-
-  runApp(MainHome());
+class Home extends StatefulWidget {
+  @override
+  _HomeState createState() => _HomeState();
 }
 
-class MainHome extends StatelessWidget {
+class _HomeState extends State<Home> {
+  // Properties & Variables needed
+
+  int currentTab = 0; // to keep track of active tab index
+  final List<Widget> screens = [
+    HomePage(),
+    CreatePage(),
+    HomePage(),
+    CreatePage(),
+  ]; // to store nested tabs
+  final PageStorageBucket bucket = PageStorageBucket();
+  Widget currentScreen = HomePage();
+
   @override
-  Widget build(BuildContext context) => ChangeNotifierProvider(
-        create: (context) => NavigationProvider(),
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: "",
-          theme: ThemeData(primarySwatch: Colors.deepOrange),
-          home: MainPage(),
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: PageStorage(
+        child: currentScreen,
+        bucket: bucket,
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.email_outlined),
+        onPressed: () {
+          setState(() {
+            currentScreen =
+                HomePage(); // if user taps on this dashboard tab will be active
+            currentTab = 0;
+          });
+        },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: BottomAppBar(
+        shape: CircularNotchedRectangle(),
+        notchMargin: 10,
+        child: Container(
+          height: 60,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  MaterialButton(
+                    minWidth: 40,
+                    onPressed: () {
+                      setState(() {
+                        currentScreen =
+                            ListSekretaris(); // if user taps on this dashboard tab will be active
+                        currentTab = 1;
+                      });
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(
+                          Icons.person,
+                          color: currentTab == 1 ? Colors.blue : Colors.grey,
+                        ),
+                        Text(
+                          'Sekretaris',
+                          style: TextStyle(
+                            color: currentTab == 1 ? Colors.blue : Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
+              // Right Tab bar icons
+
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  MaterialButton(
+                    minWidth: 40,
+                    onPressed: () {
+                      setState(() {
+                        currentScreen =
+                            ListDelegasi(); // if user taps on this dashboard tab will be active
+                        currentTab = 2;
+                      });
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(
+                          Icons.people,
+                          color: currentTab == 2 ? Colors.blue : Colors.grey,
+                        ),
+                        Text(
+                          'Delegasi',
+                          style: TextStyle(
+                            color: currentTab == 2 ? Colors.blue : Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
-      );
-}
-
-class MainPage extends StatefulWidget {
-  @override
-  _MainPageState createState() => _MainPageState();
-}
-
-class _MainPageState extends State<MainPage> {
-  @override
-  Widget build(BuildContext context) => buildPages();
-
-  Widget buildPages() {
-    final provider = Provider.of<NavigationProvider>(context);
-    final navigationItem = provider.navigationItem;
-
-    switch (navigationItem) {
-      case NavigationItem.header:
-        return HomePage();
-      case NavigationItem.people:
-        return HomePage();
-      case NavigationItem.favourites:
-        return FavouritesPage();
-      case NavigationItem.workflow:
-        return HomePage();
-      case NavigationItem.updates:
-        return HomePage();
-      case NavigationItem.plugins:
-        return HomePage();
-      case NavigationItem.notifications:
-        return HomePage();
-    }
+      ),
+    );
   }
 }

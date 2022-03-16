@@ -1,3 +1,5 @@
+import 'package:ams_go_mobile/ui/List_Page.dart';
+import 'package:ams_go_mobile/ui/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:ams_go_mobile/data/data_model.dart';
 import 'package:ams_go_mobile/ui/user_details_page.dart';
@@ -33,10 +35,13 @@ class UserTile extends StatelessWidget {
             title: Text('${userTitle()} ${user.firstName} ${user.lastName}'),
             subtitle: Text(user.job),
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => UserDetailsPage(user: user)));
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return ProfilePage();
+              }));
+              // Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //         builder: (context) => UserDetailsPage(user: user)));
             },
           ),
           Divider(

@@ -1,0 +1,1 @@
+export './tindakan.dart';

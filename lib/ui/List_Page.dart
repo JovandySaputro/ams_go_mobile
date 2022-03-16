@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ams_go_mobile/data/data_model.dart';
-import 'package:ams_go_mobile/domain/repository.dart';
+import 'package:ams_go_mobile/domain/ApiService.dart';
 import 'package:ams_go_mobile/components/loading_widget.dart';
 import 'package:ams_go_mobile/components/user_tile.dart';
 
@@ -12,13 +12,13 @@ class ListPage extends StatefulWidget {
 class _ListPageState extends State<ListPage> {
   List<User> _users = <User>[];
   List<User> _usersDisplay = <User>[];
-
+  final ApiService api = ApiService();
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    fetchUsers().then((value) {
+    api.fetchUsers().then((value) {
       setState(() {
         _isLoading = false;
         _users.addAll(value);

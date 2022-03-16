@@ -1,7 +1,14 @@
+import 'package:ams_go_mobile/components/appBarDefault.dart';
+import 'package:ams_go_mobile/data/sharedpref/sharedpref.dart';
 import 'package:ams_go_mobile/ui/List_Page.dart';
+import 'package:ams_go_mobile/ui/create_page.dart';
 import 'package:ams_go_mobile/ui/profile_page.dart';
-import 'package:ams_go_mobile/widget/navigation_drawer_widget.dart';
+import 'package:ams_go_mobile/ui/suratMasuk/list/list_surat_masuk.dart';
+import 'package:ams_go_mobile/widget/navbar.dart';
+import 'package:ams_go_mobile/widget/navigation_drawer_widget2.dart';
 import 'package:flutter/material.dart';
+
+import 'package:url_launcher/url_launcher.dart';
 // import 'package:flutter_sidebar/flutter_sidebar.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,24 +20,25 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  _launchURL() async {
+    const url = 'https://africau.edu/images/default/sample.pdf';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: NavigationDrawerWidget(),
-      appBar: AppBar(
-        title: Text(
-          "HOME",
-          style: TextStyle(color: Colors.white),
-        ),
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.settings))],
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-                colors: [Color(0xff0096ff), Color(0xff6610f2)],
-                begin: FractionalOffset.topLeft,
-                end: FractionalOffset.bottomRight),
-          ),
-        ),
-      ),
+      drawer: NavBar(),
+      appBar: AppBarDefault("Home"),
       body: Center(
         child: Container(
           width: 200,
@@ -43,12 +51,13 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             onPressed: () {
+              // _launchURL();
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return ListPage();
+                return ListSuratMasuk();
               }));
             },
             child: Text(
-              "HOME",
+              "Surat Masuk",
               style: TextStyle(
                 color: Color(0xffffffff),
               ),

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:ams_go_mobile/model/navigation_item.dart';
 
 class NavigationProvider extends ChangeNotifier {
-  NavigationItem _navigationItem = NavigationItem.header;
+  bool _isCollapsed = false;
 
-  NavigationItem get navigationItem => _navigationItem;
+  bool get isCollapsed => _isCollapsed;
 
-  void setNavigationItem(NavigationItem navigationItem) {
-    _navigationItem = navigationItem;
+  void toggleIsCollapsed() {
+    _isCollapsed = !isCollapsed;
 
     notifyListeners();
   }
